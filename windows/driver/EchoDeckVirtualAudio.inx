@@ -1,0 +1,54 @@
+; EchoDeckVirtualAudio.inx
+; Process this template with the WDK build after the WaveRT/SysVAD miniport
+; has been compiled. This file is deliberately not shipped as installable INF
+; because no unsigned or incomplete .sys may be installed.
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=MEDIA
+ClassGuid={4D36E96C-E325-11CE-BFC1-08002BE10318}
+Provider=%EchoDeckProvider%
+CatalogFile=EchoDeckVirtualAudio.cat
+DriverVer=09/16/2026,0.1.0.0
+
+[Manufacturer]
+%EchoDeckProvider%=EchoDeck,NTamd64
+
+[EchoDeck.NTamd64]
+%EchoDeckDeviceDesc%=EchoDeck_Install,Root\EchoDeckVirtualAudio
+
+[EchoDeck_Install.NT]
+Include=ks.inf,wdmaudio.inf
+Needs=KS.Registration,WDMAUDIO.Registration
+CopyFiles=EchoDeck_CopyFiles
+AddReg=EchoDeck_EndpointReg
+
+[EchoDeck_Install.NT.Services]
+AddService=EchoDeckVirtualAudio,0x00000002,EchoDeck_Service
+
+[EchoDeck_CopyFiles]
+EchoDeckVirtualAudio.sys
+
+[EchoDeck_Service]
+DisplayName=%EchoDeckServiceDesc%
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%12%\EchoDeckVirtualAudio.sys
+
+[EchoDeck_EndpointReg]
+HKR,,FriendlyName,,%EchoDeckEndpointName%
+HKR,EP\0,,0x00010001,0
+
+[SourceDisksFiles]
+EchoDeckVirtualAudio.sys=1
+
+[SourceDisksNames]
+1=%DiskName%,,
+
+[Strings]
+EchoDeckProvider="EchoDeck"
+EchoDeckDeviceDesc="EchoDeck Virtual Audio Device"
+EchoDeckServiceDesc="EchoDeck Virtual Audio Service"
+EchoDeckEndpointName="EchoDeck Combined Microphone"
+DiskName="EchoDeck Virtual Audio Installation Media"
